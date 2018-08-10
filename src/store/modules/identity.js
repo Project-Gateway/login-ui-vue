@@ -12,9 +12,9 @@ export default {
     token: null,
     emails: null,
     socialReturnUrls: {
-      google: 'https://local.dungeon.city/oauth/google',
-      facebook: 'https://local.dungeon.city/oauth/facebook',
-      twitter: 'https://local.dungeon.city/oauth/twitter',
+      google: 'https://local.pg.com/oauth/google',
+      facebook: 'https://local.pg.com/oauth/facebook',
+      twitter: 'https://local.pg.com/oauth/twitter',
     },
   },
   getters: {
