@@ -4,5 +4,6 @@ const prodEnv = require('./prod.env')
 
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
-  API_URL: '"https://local.pg.com/login-api"',
+  APP_URL: '"https://local.pg.com"',
+  API_URL: '"https://local.pg.com/login-api"'
 });
