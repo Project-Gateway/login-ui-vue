@@ -1,15 +1,20 @@
 import api from '../../helpers/api';
 import parseJwt from '../../functions/parseJwt';
+import axios from 'axios';
 
 export default {
   namespaced: true,
   state: {
+    token: localStorage.getItem('user-token') || '',
+    status: '',
+    application: 'niceboat',
+
     userId: null,
     createdAt: null,
     notBefore: null,
     expiresAt: null,
     socialUrls: null,
-    token: null,
+    // token: null,
     emails: null,
     socialReturnUrls: {
       google: 'https://local.pg.com/oauth/google',
@@ -23,7 +28,20 @@ export default {
     socialReturnUrl: state => provider => state.socialReturnUrls[provider],
   },
   mutations: {
-    setIdentity: (state, { userId, createdAt, notBefore, expiresAt, token, emails }) => {
+    'LOGIN_REQUEST': (state) => {
+      state.status = 'loading';
+    },
+    'LOGIN_SUCCESS': (state, token) => {
+      state.status = 'success';
+      state.token = token;
+    },
+    'LOGIN_ERROR': (state) => {
+      state.status = 'error';
+    },
+    'LOGOUT': (state) => {
+      state.status = '';
+    },
+    'SET_IDENTITY': (state, { userId, createdAt, notBefore, expiresAt, token, emails }) => {
       state.userId = userId;
       state.createdAt = createdAt;
       state.notBefore = notBefore;
@@ -31,8 +49,8 @@ export default {
       state.token = token;
       state.emails = emails;
     },
-    setSocialUrls: (state, { urls }) => { state.socialUrls = urls; },
-    removeIdentity: (state) => {
+    'SET_SOCIAL_URLS': (state, { urls }) => { state.socialUrls = urls; },
+    'REMOVE_IDENTITY': (state) => {
       state.userId = null;
       state.createdAt = null;
       state.notBefore = null;
@@ -43,46 +61,65 @@ export default {
   actions: {
     retrieveSocialLinks({ state, commit, getters }) {
       if (!state.socialUrls) {
-        api.get('auth/social/urls', {
-          providers: [{
-            provider: 'google',
-            redirectUri: getters.socialReturnUrl('google'),
-          }, {
-            provider: 'facebook',
-            redirectUri: getters.socialReturnUrl('facebook'),
-          }, {
-            provider: 'twitter',
-            redirectUri: getters.socialReturnUrl('twitter'),
-          }],
-        }, (response) => {
-          commit('setSocialUrls', { urls: response.data });
+        axios({
+          url: 'https://local.pg.com/login-api/auth/social/urls',
+          method: 'GET',
+          params: {
+            providers: [{
+              provider: 'google',
+              redirectUri: getters.socialReturnUrl('google'),
+            }, {
+              provider: 'facebook',
+              redirectUri: getters.socialReturnUrl('facebook'),
+            }, {
+              provider: 'twitter',
+              redirectUri: getters.socialReturnUrl('twitter'),
+            }],
+          },
+        }).then((resp) => {
+          commit('SET_SOCIAL_URLS', { urls: resp.data });
         });
       }
     },
-    retrieveIdentityFromLocalStorage({ commit }) {
+    retrieveIdentityFromLocalStorage: ({ commit }) => {
       const identity = JSON.parse(localStorage.getItem('identity'));
       if (identity !== null) {
-        commit('setIdentity', identity);
+        commit('SET_IDENTITY', identity);
       }
     },
-    logUser({ commit }, { accessToken, tokenType, emails }) {
+    logUser: ({ commit }, { accessToken, tokenType, emails }) => {
       const identity = parseJwt(accessToken);
       identity.token = accessToken;
       identity.tokenType = tokenType;
       identity.emails = emails;
       localStorage.setItem('identity', JSON.stringify(identity));
-      commit('setIdentity', identity);
+      commit('SET_IDENTITY', identity);
     },
-    logout({ commit }) {
-      api.post('auth/logout', null, null,
-        () => {
-          localStorage.removeItem('identity');
-          commit('removeIdentity');
-        },
-        (error) => {
-          console.log('error on logout', error);
-        },
-      );
+    login: ({state, commit, dispatch}, data) => new Promise((resolve, reject) => {
+      commit('LOGIN_REQUEST');
+      data = {...data, application: state.application};
+      axios({url: 'https://local.pg.com/login-api/auth/login', data: data, method: 'POST' }).then(resp => {
+        const token = resp.data.accessToken;
+        localStorage.setItem('user-token', token);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        dispatch('logUser', resp.data);
+        commit('LOGIN_SUCCESS', token);
+        resolve(resp)
+      }).catch(err => {
+        commit('LOGIN_ERROR', err);
+        localStorage.removeItem('user-token'); // if the request fails, remove any possible user token if possible
+        reject(err);
+      });
+    }),
+    logout: ({ commit }) => {
+      localStorage.removeItem('user-token');
+      localStorage.removeItem('identity');
+      commit('REMOVE_IDENTITY');
+      axios({url: 'https://local.pg.com/login-api/auth/logout', data: {}, method: 'POST'}).then(resp => {
+        commit('LOGOUT');
+      }).finally(() => {
+        delete axios.defaults.headers.common['Authorization'];
+      });
     },
   },
 };

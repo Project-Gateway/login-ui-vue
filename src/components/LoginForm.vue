@@ -86,16 +86,23 @@ export default {
   },
   methods: {
     submit() {
-      api.post('auth/login', { email: this.form.email, password: this.form.password }, null,
-        (response) => {
-          this.$store.dispatch('identity/logUser', response.data);
-        },
-        ({ response }) => {
-          this.error = response.data.message;
-        },
-      );
-    },
+      this.$store.dispatch('identity/login', {email: this.form.email, password: this.form.password}).then(() => {
+        //console.log('logged');
+      }).catch(({response}) => {
+        this.error = response.data.message;
+      });
+    }
   },
+//    submit() {
+//      api.post('auth/login', { email: this.form.email, password: this.form.password }, null,
+//        (response) => {
+//          this.$store.dispatch('identity/logUser', response.data);
+//        },
+//        ({ response }) => {
+//          this.error = response.data.message;
+//        },
+//      );
+//    },
 };
 </script>
 
