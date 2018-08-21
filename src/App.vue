@@ -21,6 +21,7 @@ export default {
   },
   name: 'App',
   created() {
+    this.$store.dispatch('identity/setupLoginApi');
     this.$store.dispatch('identity/retrieveIdentityFromLocalStorage');
     this.$store.dispatch('identity/retrieveSocialLinks');
   },

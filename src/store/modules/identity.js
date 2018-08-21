@@ -6,7 +6,6 @@ export default {
   namespaced: true,
   state: {
     token: localStorage.getItem('user-token') || '',
-    status: '',
     application: 'niceboat',
 
     userId: null,
@@ -28,19 +27,6 @@ export default {
     socialReturnUrl: state => provider => state.socialReturnUrls[provider],
   },
   mutations: {
-    'LOGIN_REQUEST': (state) => {
-      state.status = 'loading';
-    },
-    'LOGIN_SUCCESS': (state, token) => {
-      state.status = 'success';
-      state.token = token;
-    },
-    'LOGIN_ERROR': (state) => {
-      state.status = 'error';
-    },
-    'LOGOUT': (state) => {
-      state.status = '';
-    },
     'SET_IDENTITY': (state, { userId, createdAt, notBefore, expiresAt, token, emails }) => {
       state.userId = userId;
       state.createdAt = createdAt;
@@ -59,7 +45,10 @@ export default {
     },
   },
   actions: {
-    retrieveSocialLinks({ state, commit, getters }) {
+    setupLoginApi: ({ state }) => {
+      axios.defaults.headers.common['X-Orion-Application'] = 'niceboat';
+    },
+    retrieveSocialLinks: ({ state, commit, getters }) => {
       if (!state.socialUrls) {
         axios({
           url: 'https://local.pg.com/login-api/auth/social/urls',
@@ -96,17 +85,25 @@ export default {
       commit('SET_IDENTITY', identity);
     },
     login: ({state, commit, dispatch}, data) => new Promise((resolve, reject) => {
-      commit('LOGIN_REQUEST');
-      data = {...data, application: state.application};
       axios({url: 'https://local.pg.com/login-api/auth/login', data: data, method: 'POST' }).then(resp => {
         const token = resp.data.accessToken;
         localStorage.setItem('user-token', token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         dispatch('logUser', resp.data);
-        commit('LOGIN_SUCCESS', token);
         resolve(resp)
       }).catch(err => {
-        commit('LOGIN_ERROR', err);
+        localStorage.removeItem('user-token'); // if the request fails, remove any possible user token if possible
+        reject(err);
+      });
+    }),
+    register: ({state, commit, dispatch}, data) => new Promise((resolve, reject) => {
+      axios({url: 'https://local.pg.com/login-api/auth/register', data: data, method: 'POST' }).then(resp => {
+        const token = resp.data.accessToken;
+        localStorage.setItem('user-token', token);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        dispatch('logUser', resp.data);
+        resolve(resp)
+      }).catch(err => {
         localStorage.removeItem('user-token'); // if the request fails, remove any possible user token if possible
         reject(err);
       });
@@ -116,7 +113,7 @@ export default {
       localStorage.removeItem('identity');
       commit('REMOVE_IDENTITY');
       axios({url: 'https://local.pg.com/login-api/auth/logout', data: {}, method: 'POST'}).then(resp => {
-        commit('LOGOUT');
+        //
       }).finally(() => {
         delete axios.defaults.headers.common['Authorization'];
       });

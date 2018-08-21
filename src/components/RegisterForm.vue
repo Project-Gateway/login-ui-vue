@@ -27,8 +27,7 @@
       <b-alert dismissible variant="danger" v-bind:show="!!error" v-on:dismissed="error=null">
         {{ error }}
       </b-alert>
-      <b-button type="submit" variant="primary">Sign Up</b-button>
-      <b-button to="/register" variant="success">Sign In</b-button>
+      <b-button type="submit" variant="success">Sign In</b-button>
     </b-form>
 
     <separator>Or connect with</separator>
@@ -53,11 +52,10 @@
 
 <script>
 import Separator from './widgets/Separator';
-import api from '../helpers/api';
 
 export default {
   components: { Separator },
-  name: 'login-form',
+  name: 'register-form',
   props: ['query'],
   data() {
     return {
@@ -87,7 +85,7 @@ export default {
   },
   methods: {
     submit() {
-      this.$store.dispatch('identity/login', {email: this.form.email, password: this.form.password}).then(() => {
+      this.$store.dispatch('identity/register', {email: this.form.email, password: this.form.password}).then(() => {
         //console.log('logged');
       }).catch(({response}) => {
         this.error = response.data.message;

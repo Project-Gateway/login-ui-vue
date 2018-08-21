@@ -4,6 +4,7 @@ import Home from '@/components/Home';
 import Test from '@/components/Test';
 import OAuth from '@/components/OAuth';
 import Chat from '@/components/Chat';
+import RegisterPage from '@/components/RegisterPage';
 
 Vue.use(Router);
 
@@ -14,6 +15,11 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home,
+    },
+    {
+      path: '/register',
+      name: 'Sign In',
+      component: RegisterPage,
     },
     {
       path: '/chat',
