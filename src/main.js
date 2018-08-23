@@ -10,6 +10,7 @@ import App from './App';
 import router from './router';
 import store from './store';
 import * as VueGoogleMaps from 'vue2-google-maps';
+import PubNubVue from 'pubnub-vue';
 
 Vue.config.productionTip = false;
 
@@ -20,6 +21,11 @@ Vue.use(VueGoogleMaps, {
     key: "AIzaSyDCSrHo54xGO5jQqtSdBn_LnSbx97ID5j0",
     libraries: "places" // necessary for places input
   }
+});
+
+Vue.use(PubNubVue, {
+  subscribeKey: 'sub-c-fce045dc-95bc-11e8-9a78-8ae329637954',
+  publishKey: 'pub-c-bc1ba433-8a7e-40a1-bbb1-b498c93e0eaf'
 });
 
 /* eslint-disable no-new */
