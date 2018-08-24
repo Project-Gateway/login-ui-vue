@@ -20,9 +20,11 @@ export default {
     GoogleMap
   },
   name: 'App',
+  beforeCreate() {
+    this.$store.dispatch('identity/retrieveIdentityFromLocalStorage');
+  },
   created() {
     this.$store.dispatch('identity/setupLoginApi');
-    this.$store.dispatch('identity/retrieveIdentityFromLocalStorage');
     this.$store.dispatch('identity/retrieveSocialLinks');
   },
 };

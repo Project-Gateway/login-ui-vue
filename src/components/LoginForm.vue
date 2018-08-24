@@ -27,8 +27,8 @@
       <b-alert dismissible variant="danger" v-bind:show="!!error" v-on:dismissed="error=null">
         {{ error }}
       </b-alert>
-      <b-button type="submit" variant="primary">Sign Up</b-button>
-      <b-button to="/register" variant="success">Sign In</b-button>
+      <b-button type="submit" variant="primary">Login</b-button>
+      <b-button to="/register" variant="success">Sign Up</b-button>
     </b-form>
 
     <separator>Or connect with</separator>
@@ -88,7 +88,7 @@ export default {
   methods: {
     submit() {
       this.$store.dispatch('identity/login', {email: this.form.email, password: this.form.password}).then(() => {
-        //console.log('logged');
+        this.$router.push('/');
       }).catch(({response}) => {
         this.error = response.data.message;
       });
