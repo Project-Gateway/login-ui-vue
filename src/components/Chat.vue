@@ -1,5 +1,9 @@
 <template>
+
     <div id="chat">
+        <p>
+          Total users: {{ occupancy }}
+        </p>
         <input type="text" v-model.trim="messageInput" @keyup.enter="send(messageInput)">
         <div v-for="msg in messages">{{msg.message}}</div>
         <google-map ref="GoogleMap"></google-map>
@@ -21,10 +25,14 @@
         messageInput: null,
         lat: null,
         lng: null,
+        occupancy: 0,
       }
     },
     mounted() {
+      this.$pnGetInstance().setUUID(this.$store.state.identity.userId || Date.now());
+
       this.$pnSubscribe({ channels: ['map'], withPresence: true });
+      this.$pnGetPresence('map', this.presence);
     },
     beforeMount: function () {
         if (navigator.geolocation) {
@@ -34,6 +42,7 @@
             this.lng = position.coords.longitude;
 
             this.markOnMap();
+
           }, (err) => {
             // error handling here
           });
@@ -61,6 +70,10 @@
 
         // clean the message
         this.messageInput = '';
+      },
+      presence(ps) {
+        console.log(this.$pnGetInstance().getUUID());
+        this.occupancy = ps.occupancy;
       },
       receptor(msg) {
         this.lat = msg.lat;

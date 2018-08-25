@@ -25,7 +25,7 @@ Vue.use(VueGoogleMaps, {
 
 Vue.use(PubNubVue, {
   subscribeKey: 'sub-c-fce045dc-95bc-11e8-9a78-8ae329637954',
-  publishKey: 'pub-c-bc1ba433-8a7e-40a1-bbb1-b498c93e0eaf'
+  publishKey: 'pub-c-bc1ba433-8a7e-40a1-bbb1-b498c93e0eaf',
 });
 
 /* eslint-disable no-new */
