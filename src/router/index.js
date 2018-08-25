@@ -56,7 +56,19 @@ export default new Router({
             to: '/users/index',
           },
           'index'
-        ]
+        ],
+        indexConfig: {
+          apiRoute: '/users',
+          columnsConfig: [
+            {name: 'email', title: 'Email'},
+            {name: 'created_at', title: 'Created'},
+            {name: 'updated_at', title: 'Updated'},
+          ],
+          rowsCallback: ({emails, ...rest}) => ({
+            email: `${emails.shift().email} ` + (emails.length ? `+${emails.length}` : ''),
+            ...rest
+          }),
+        },
       },
       meta: {
         requiresAuth: true,

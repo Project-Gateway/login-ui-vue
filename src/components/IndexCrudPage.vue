@@ -1,35 +1,38 @@
 <template>
   <div>
     <b-breadcrumb v-bind:items="breadcrumb"/>
-    <base-grid v-bind="gridConfig"></base-grid>
+    <base-remote-grid v-if="remote" v-bind="gridConfig"></base-remote-grid>
+    <base-grid v-else v-bind="gridConfig"></base-grid>
 
   </div>
 </template>
 
 <script>
   import BaseGrid from './BaseGrid.vue';
+  import BaseRemoteGrid from './BaseRemoteGrid.vue';
 
   export default {
     components: {
       BaseGrid,
+      BaseRemoteGrid,
     },
     data() {
       return {
-        gridConfig: {
-          apiRoute: '/users/paginated',
-          columnsConfig: [
-            {name: 'email', title: 'Email'},
-            {name: 'created_at', title: 'Created'},
-            {name: 'updated_at', title: 'Updated'},
-          ],
-          rowsCallback: ({emails, ...rest}) => ({
-            email: `${emails.shift().email} ` + (emails.length ? `+${emails.length}` : ''),
-            ...rest
-          }),
-        },
+        gridConfig: this.indexConfig
       };
     },
-    props: ['breadcrumb'],
+    props: {
+      breadcrumb: {
+        type: Array
+      },
+      indexConfig: {
+        type: Object,
+        required: true,
+      },
+      remote: {
+        'default': false
+      }
+    },
   };
 
 </script>
