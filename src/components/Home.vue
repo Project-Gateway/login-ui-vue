@@ -1,6 +1,10 @@
 <template>
-  <login-form v-if="!logged"></login-form>
-  <h1 v-else>Logged In!</h1>
+  <div v-if="!logged">
+    <h2>Guest Homepage</h2>
+  </div>
+  <div v-else>
+    <h2>Logged Homepage</h2>
+  </div>
 </template>
 
 <script>

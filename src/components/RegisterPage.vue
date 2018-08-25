@@ -1,8 +1,7 @@
 <template>
   <div>
     <h2>Register User</h2>
-    <register-form v-if="!logged"></register-form>
-    <h1 v-else>Logged In!</h1>
+    <register-form></register-form>
   </div>
 </template>
 

@@ -8,6 +8,7 @@ export default {
     token: localStorage.getItem('user-token') || '',
     application: 'niceboat',
 
+    ready: false,
     userId: null,
     createdAt: null,
     notBefore: null,
@@ -28,12 +29,16 @@ export default {
   },
   mutations: {
     'SET_IDENTITY': (state, { userId, createdAt, notBefore, expiresAt, token, emails }) => {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       state.userId = userId;
       state.createdAt = createdAt;
       state.notBefore = notBefore;
       state.expiresAt = expiresAt;
       state.token = token;
       state.emails = emails;
+    },
+    'SET_READY': (state) =>{
+      state.ready = true;
     },
     'SET_SOCIAL_URLS': (state, { urls }) => { state.socialUrls = urls; },
     'REMOVE_IDENTITY': (state) => {
@@ -75,6 +80,7 @@ export default {
       if (identity !== null) {
         commit('SET_IDENTITY', identity);
       }
+      commit('SET_READY');
     },
     logUser: ({ commit }, { accessToken, tokenType, emails }) => {
       const identity = parseJwt(accessToken);
@@ -88,7 +94,6 @@ export default {
       axios({url: 'https://local.pg.com/login-api/auth/login', data: data, method: 'POST' }).then(resp => {
         const token = resp.data.accessToken;
         localStorage.setItem('user-token', token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         dispatch('logUser', resp.data);
         resolve(resp)
       }).catch(err => {
@@ -108,15 +113,17 @@ export default {
         reject(err);
       });
     }),
-    logout: ({ commit }) => {
+    logout: ({ commit }) => new Promise((resolve, reject) => {
       localStorage.removeItem('user-token');
       localStorage.removeItem('identity');
       commit('REMOVE_IDENTITY');
       axios({url: 'https://local.pg.com/login-api/auth/logout', data: {}, method: 'POST'}).then(resp => {
-        //
+        resolve(resp);
+      }).catch(err => {
+        reject(err);
       }).finally(() => {
         delete axios.defaults.headers.common['Authorization'];
       });
-    },
+    }),
   },
 };

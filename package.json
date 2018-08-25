@@ -13,6 +13,9 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@devexpress/dx-vue-core": "^1.7.0",
+    "@devexpress/dx-vue-grid": "^1.7.0",
+    "@devexpress/dx-vue-grid-bootstrap4": "^1.7.0",
     "axios": "^0.18.0",
     "bootstrap": "^4.1.3",
     "bootstrap-social": "^5.1.1",
@@ -21,6 +24,7 @@
     "font-awesome": "^4.7.0",
     "latlon-geohash": "^1.1.0",
     "pubnub-vue": "git+https://github.com/pubnub/vue.git",
+    "open-iconic": "^1.1.1",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vue2-google-maps": "^0.10.1",
