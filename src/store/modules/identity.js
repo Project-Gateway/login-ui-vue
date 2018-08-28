@@ -16,6 +16,9 @@ export default {
     socialUrls: null,
     // token: null,
     emails: null,
+    role: null,
+    dbRole: null,
+    childRoles: null,
     socialReturnUrls: {
       google: 'https://local.pg.com/oauth/google',
       facebook: 'https://local.pg.com/oauth/facebook',
@@ -28,7 +31,7 @@ export default {
     socialReturnUrl: state => provider => state.socialReturnUrls[provider],
   },
   mutations: {
-    'SET_IDENTITY': (state, { userId, createdAt, notBefore, expiresAt, token, emails }) => {
+    'SET_IDENTITY': (state, { userId, createdAt, notBefore, expiresAt, token, emails, role, dbRole, childRoles }) => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       state.userId = userId;
       state.createdAt = createdAt;
@@ -36,6 +39,9 @@ export default {
       state.expiresAt = expiresAt;
       state.token = token;
       state.emails = emails;
+      state.role = role;
+      state.dbRole = dbRole;
+      state.childRoles = childRoles;
     },
     'SET_READY': (state) =>{
       state.ready = true;

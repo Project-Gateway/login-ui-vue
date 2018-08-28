@@ -1,9 +1,11 @@
 <template>
-  <div>
+  <div class="main-div">
     <b-breadcrumb v-bind:items="breadcrumb"/>
+    <div v-if="!!newButton.label" class="buttons">
+      <b-button variant="primary" class="new-button" v-bind:to="newButton.route">{{newButton.label}}</b-button>
+    </div>
     <base-remote-grid v-if="remote" v-bind="gridConfig"></base-remote-grid>
     <base-grid v-else v-bind="gridConfig"></base-grid>
-
   </div>
 </template>
 
@@ -31,6 +33,9 @@
       },
       remote: {
         'default': false
+      },
+      newButton: {
+        type: Object
       }
     },
   };
@@ -39,7 +44,12 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  div {
-    padding: 30px 10px;
+  div.main-div {
+    padding: 10px 10px;
   }
+  div.buttons {
+    text-align: left;
+    padding: 0px 0px 10px 0px;
+  }
+
 </style>

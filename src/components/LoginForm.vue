@@ -33,21 +33,23 @@
 
     <separator>Or connect with</separator>
 
-    <b-button class="btn-social btn-facebook"
-              v-bind:href="facebookUrl"
-              v-bind:disabled="!facebookUrl">
-      <i class="fa fa-facebook"></i> Facebook
-    </b-button>
-    <b-button class="btn-social btn-google"
-              v-bind:href="googleUrl"
-              v-bind:disabled="!googleUrl">
-      <i class="fa fa-google"></i> Google
-    </b-button>
-    <b-button class="btn-social btn-twitter"
-              v-bind:href="twitterUrl"
-              v-bind:disabled="!twitterUrl">
-      <i class="fa fa-twitter"></i> Twitter
-    </b-button>
+    <div class="social-login-container">
+      <b-button class="btn-social btn-facebook"
+                v-bind:href="facebookUrl"
+                v-bind:disabled="!facebookUrl">
+        <i class="fa fa-facebook"></i> Facebook
+      </b-button>
+      <b-button class="btn-social btn-google"
+                v-bind:href="googleUrl"
+                v-bind:disabled="!googleUrl">
+        <i class="fa fa-google"></i> Google
+      </b-button>
+      <b-button class="btn-social btn-twitter"
+                v-bind:href="twitterUrl"
+                v-bind:disabled="!twitterUrl">
+        <i class="fa fa-twitter"></i> Twitter
+      </b-button>
+    </div>
   </div>
 </template>
 
@@ -99,5 +101,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+div.social-login-container {
+  text-align: center;
+}
 </style>
