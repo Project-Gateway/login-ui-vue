@@ -37,6 +37,7 @@
     DxPagingPanel,
   } from '@devexpress/dx-vue-grid-bootstrap4';
   import axios from 'axios';
+  import loginApiConfig from '../config/login-api';
 
   export default {
     components: {
@@ -67,7 +68,7 @@
       },
       apiUrl: {
         type: String,
-        'default': 'https://local.pg.com/login-api'
+        'default': loginApiConfig.URL
       },
       apiRoute: {
         type: String,

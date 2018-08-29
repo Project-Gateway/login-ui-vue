@@ -1,6 +1,6 @@
-import api from '../../helpers/api';
 import parseJwt from '../../functions/parseJwt';
 import axios from 'axios';
+import loginApiConfig from '../../config/login-api';
 
 export default {
   namespaced: true,
@@ -20,9 +20,9 @@ export default {
     dbRole: null,
     childRoles: null,
     socialReturnUrls: {
-      google: 'https://local.pg.com/oauth/google',
-      facebook: 'https://local.pg.com/oauth/facebook',
-      twitter: 'https://local.pg.com/oauth/twitter',
+      google: window.location.href + '/oauth/google',
+      facebook: window.location.href + '/oauth/facebook',
+      twitter: window.location.href + '/oauth/twitter',
     },
   },
   getters: {
@@ -62,7 +62,7 @@ export default {
     retrieveSocialLinks: ({ state, commit, getters }) => {
       if (!state.socialUrls) {
         axios({
-          url: 'https://local.pg.com/login-api/auth/social/urls',
+          url: `${loginApiConfig.URL}/auth/social/urls`,
           method: 'GET',
           params: {
             providers: [{
@@ -97,7 +97,7 @@ export default {
       commit('SET_IDENTITY', identity);
     },
     login: ({state, commit, dispatch}, data) => new Promise((resolve, reject) => {
-      axios({url: 'https://local.pg.com/login-api/auth/login', data: data, method: 'POST' }).then(resp => {
+      axios({url: `${loginApiConfig.URL}/auth/login`, data: data, method: 'POST' }).then(resp => {
         const token = resp.data.accessToken;
         localStorage.setItem('user-token', token);
         dispatch('logUser', resp.data);
@@ -108,7 +108,7 @@ export default {
       });
     }),
     register: ({state, commit, dispatch}, data) => new Promise((resolve, reject) => {
-      axios({url: 'https://local.pg.com/login-api/auth/register', data: data, method: 'POST' }).then(resp => {
+      axios({url: `${loginApiConfig.URL}/auth/register`, data: data, method: 'POST' }).then(resp => {
         const token = resp.data.accessToken;
         localStorage.setItem('user-token', token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -123,7 +123,7 @@ export default {
       localStorage.removeItem('user-token');
       localStorage.removeItem('identity');
       commit('REMOVE_IDENTITY');
-      axios({url: 'https://local.pg.com/login-api/auth/logout', data: {}, method: 'POST'}).then(resp => {
+      axios({url: `${loginApiConfig.URL}/auth/logout`, data: {}, method: 'POST'}).then(resp => {
         resolve(resp);
       }).catch(err => {
         reject(err);

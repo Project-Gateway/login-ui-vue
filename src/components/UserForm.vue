@@ -49,6 +49,8 @@
 
 <script>
 import axios from 'axios';
+import loginApiConfig from '../config/login-api';
+
 export default {
   data() {
     return {
@@ -84,7 +86,7 @@ export default {
     onSubmit (evt) {
       evt.preventDefault();
       axios({
-        url: 'https://local.pg.com/login-api/users',
+        url: localApiConfig.URL,
         data: this.form,
         method: 'POST'
       }).then(({data: payload}) => {
