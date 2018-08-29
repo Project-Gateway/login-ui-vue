@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import 'bootstrap-social/bootstrap-social.css';
 import 'font-awesome/css/font-awesome.min.css';
+import 'open-iconic/font/css/open-iconic-bootstrap.min.css';
 import App from './App';
 import router from './router';
 import store from './store';

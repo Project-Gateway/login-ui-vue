@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Register User</h2>
+    <b-breadcrumb v-bind:items="breadcrumb"/>
     <register-form></register-form>
   </div>
 </template>
@@ -16,11 +16,18 @@
         return this.$store.getters['identity/logged'];
       },
     },
+    data() {
+      return {
+        breadcrumb: ['Register User']
+      };
+    }
   };
 
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+div {
+  margin: 10px;
+}
 </style>

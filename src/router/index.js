@@ -7,6 +7,7 @@ import Chat from '@/components/Chat';
 import LoginPage from '@/components/LoginPage';
 import RegisterPage from '@/components/RegisterPage';
 import IndexCrudPage from '@/components/IndexCrudPage';
+import UserForm from '@/components/UserForm';
 
 
 Vue.use(Router);
@@ -56,11 +57,32 @@ export default new Router({
             to: '/users/index',
           },
           'index'
-        ]
+        ],
+        indexConfig: {
+          apiRoute: '/users',
+          columnsConfig: [
+            {name: 'email', title: 'Email'},
+            {name: 'created_at', title: 'Created'},
+            {name: 'updated_at', title: 'Updated'},
+          ],
+          rowsCallback: ({emails, ...rest}) => ({
+            email: `${emails.shift().email} ` + (emails.length ? `+${emails.length}` : ''),
+            ...rest
+          }),
+        },
+        newButton: {
+          label: "New User",
+          route: '/users/new'
+        }
       },
       meta: {
         requiresAuth: true,
       }
+    },{
+      path: '/users/new',
+      name: 'New User',
+      component: UserForm
+
     },{
       path: '/users/:id',
       name: 'Show User'

@@ -2,36 +2,23 @@
   <div>
     <dx-grid
             v-if="!loading"
-            v-bind:rows="rows"
-            v-bind:columns="columns"
+            :rows="rows"
+            :columns="columns"
     >
-
-      <dx-sorting-state
-              v-bind:sorting.sync="sorting"
-      ></dx-sorting-state>
-      <dx-paging-state
-              v-bind:currentPage.sync="currentPage"
-              v-bind:pageSize.sync="pageSize"
-      ></dx-paging-state>
-      <dx-search-state
-              v-bind:value.sync="searchValue"
-      ></dx-search-state>
-      <dx-filtering-state
-              v-bind:filters.sync="filters"
-      ></dx-filtering-state>
-
-      <dx-integrated-sorting />
-      <dx-integrated-paging/>
-      <dx-integrated-filtering />
-
       <dx-table/>
-      <dx-table-header-row showSortingControls></dx-table-header-row>
-      <dx-table-filter-row />
+      <dx-paging-state
+              v-bind:currentPage="currentPage"
+              v-on:update:currentPage="changeCurrentPage"
+              v-bind:pageSize="pageSize"
+              v-on:update:pageSize="changePageSize"
+      ></dx-paging-state>
+      <dx-custom-paging
+              v-bind:totalCount="totalCount"
+      ></dx-custom-paging>
       <dx-paging-panel
-              v-bind:pageSizes.sync="pageSizes"
+              v-bind:pageSizes="pageSizes"
       ></dx-paging-panel>
-      <dx-toolbar />
-      <dx-search-panel />
+      <dx-table-header-row></dx-table-header-row>
     </dx-grid>
     <h3 v-else>Loading...</h3>
   </div>
@@ -41,20 +28,13 @@
   import {
     DxPagingState,
     DxSortingState,
-    DxFilteringState,
-    DxIntegratedSorting,
-    DxIntegratedPaging,
-    DxIntegratedFiltering,
-    DxSearchState,
+    DxCustomPaging,
   } from '@devexpress/dx-vue-grid';
   import {
     DxGrid,
     DxTable,
     DxTableHeaderRow,
-    DxTableFilterRow,
     DxPagingPanel,
-    DxSearchPanel,
-    DxToolbar
   } from '@devexpress/dx-vue-grid-bootstrap4';
   import axios from 'axios';
 
@@ -62,27 +42,17 @@
     components: {
       DxSortingState,
       DxPagingState,
-      DxFilteringState,
-      DxIntegratedPaging,
-      DxIntegratedSorting,
-      DxIntegratedFiltering,
+      DxCustomPaging,
       DxGrid,
       DxTable,
       DxTableHeaderRow,
-      DxTableFilterRow,
       DxPagingPanel,
-      DxSearchState,
-      DxSearchPanel,
-      DxToolbar
     },
     name: 'base-grid',
     data() {
       return {
         columns: this.columnsConfig,
         rows: [],
-        sorting: [],
-        filters: [],
-        searchValue: '',
         totalCount: 0,
         pageSize: this.pageSizeConfig,
         pageSizes: this.pageSizesConfig,
@@ -125,12 +95,26 @@
         axios({
           url: `${this.apiUrl}${this.apiRoute}`,
           data: this.requestBody,
+          params: {
+            pages: this.pageSize,
+            page: this.currentPage + 1
+          },
           method: this.apiMethod
         }).then(({data: payload}) => {
-          this.rows = payload.map(this.rowsCallback);
-          this.totalCount = payload.length;
+          this.rows = payload.data.map(this.rowsCallback);
+          this.totalCount = payload.total;
           this.loading = false;
         });
+      },
+      changeCurrentPage(currentPage) {
+        this.loading = true;
+        this.currentPage = currentPage;
+        this.loadData();
+      },
+      changePageSize(pageSize) {
+        this.loading = true;
+        this.pageSize = pageSize;
+        this.loadData();
       },
     },
     mounted() {
