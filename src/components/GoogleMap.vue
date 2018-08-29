@@ -33,12 +33,12 @@ export default {
 
   mounted() {
     this.geolocate();
+    this.$pnSubscribe({ channels: ['ch1', 'ch2'], withPresence: true });
   },
 
   methods: {
     // receives a place lat, lng
     addMarker(lat, lng) {
-      console.log(lat);
         if (lat && lng) {
           const marker = {
             lat: lat,
