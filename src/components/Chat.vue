@@ -4,7 +4,7 @@
         <p>
           Total users: {{ occupancy }}
         </p>
-        <input type="text" v-model.trim="messageInput" @keyup.enter="send(messageInput)">
+        <input type="text" v-model.trim="messageInput" @keyup.enter="send(messageInput)"> <button v-on:click="send(messageInput)">Send message</button>
         <div v-for="msg in messages">{{msg.message}}</div>
         <google-map ref="GoogleMap"></google-map>
     </div>
