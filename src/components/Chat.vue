@@ -72,7 +72,7 @@
         this.messageInput = '';
       },
       presence(ps) {
-        console.log(this.$pnGetInstance().getUUID());
+        console.log(ps);
         this.occupancy = ps.occupancy;
       },
       receptor(msg) {

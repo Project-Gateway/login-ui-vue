@@ -33,7 +33,6 @@ export default {
 
   mounted() {
     this.geolocate();
-    this.$pnSubscribe({ channels: ['ch1', 'ch2'], withPresence: true });
   },
 
   methods: {
