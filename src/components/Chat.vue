@@ -28,9 +28,13 @@
         occupancy: 0,
       }
     },
+    computed: {
+      geoLocation: function() {
+        return this.$store.getters['geo/geoLocation'];
+      }
+    },
     mounted() {
       this.$pnGetInstance().setUUID(this.$store.state.identity.userId || Date.now());
-
       this.$pnSubscribe({ channels: ['map'], withPresence: true });
       this.$pnGetPresence('map', this.presence);
     },
@@ -40,8 +44,8 @@
             //set coordinates
             this.lat = position.coords.latitude;
             this.lng = position.coords.longitude;
-
-            this.markOnMap();
+            this.$store.dispatch('geo/saveLocation', {lat: this.lat, lng: this.lng});
+            this.markOnMap(this.lat, this.lng);
 
           }, (err) => {
             // error handling here
@@ -56,8 +60,8 @@
         // A data entry.
         let data = {
           message: messageInput,
-          lat: this.lat,
-          lng: this.lng
+          lat: this.geoLocation.lat,
+          lng: this.geoLocation.lng,
         };
 
         // Get a key for a new message.
@@ -72,15 +76,15 @@
         this.messageInput = '';
       },
       presence(ps) {
-        console.log(ps);
         this.occupancy = ps.occupancy;
       },
       receptor(msg) {
-        this.lat = msg.lat;
-        this.lng = msg.lng;
+        console.log('got msg', msg.message);
+        this.markOnMap(msg.message.lat, msg.message.lng);
       },
-      markOnMap () {
-        this.$refs.GoogleMap.addMarker(this.lat, this.lng);
+      markOnMap (lat, lng) {
+        console.log(lat, lng);
+        this.$refs.GoogleMap.addMarker(lat, lng);
       }
     }
   }
