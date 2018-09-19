@@ -8,9 +8,20 @@ import LoginPage from '@/components/LoginPage';
 import RegisterPage from '@/components/RegisterPage';
 import IndexCrudPage from '@/components/IndexCrudPage';
 import UserForm from '@/components/UserForm';
-
+import DatePicker from '../components/DatePicker';
+import DraggableCal from 'vue-draggable-cal';
+import BootstrapVue from 'bootstrap-vue';
+import ServiceList from '../components/ServiceList';
+import OpenServiceList from '../components/OpenServiceList';
+import * as uiv from 'uiv';
 
 Vue.use(Router);
+Vue.use(DatePicker);
+Vue.use(BootstrapVue);
+Vue.use(DraggableCal);
+Vue.use(ServiceList);
+Vue.use(OpenServiceList);
+Vue.use(uiv);
 
 export default new Router({
   mode: 'history',
@@ -40,6 +51,11 @@ export default new Router({
       path: '/chat',
       name: 'Chat',
       component: Chat,
+    },
+    {
+      path: '/schedule',
+      name: 'DatePicker',
+      component: DatePicker
     },
     {
       path: '/test',

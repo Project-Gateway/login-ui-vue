@@ -9,12 +9,14 @@
 </template>
 
 <script>
+import DatePicker from './components/DatePicker';
 import MainHeader from './components/MainHeader';
 import MainMenu from './components/MainMenu';
 import GoogleMap from './components/GoogleMap';
 
 export default {
   components: {
+    DatePicker,
     MainMenu,
     MainHeader,
     GoogleMap

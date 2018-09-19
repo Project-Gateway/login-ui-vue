@@ -27,7 +27,7 @@
       <b-alert dismissible variant="danger" v-bind:show="!!error" v-on:dismissed="error=null">
         {{ error }}
       </b-alert>
-      <b-button type="submit" variant="success">Sign In</b-button>
+      <b-button type="submit" variant="success">Register</b-button>
     </b-form>
 
     <separator>Or connect with</separator>
