@@ -36,8 +36,7 @@ export default {
   },
 
   methods: {
-    // receives a place lat, lng
-    addMarker(lat, lng) {
+    addMarker: function(lat, lng) {
         if (lat && lng) {
           const marker = {
             lat: lat,
@@ -48,7 +47,6 @@ export default {
         }
     },
     geolocate: function() {
-
       navigator.geolocation.getCurrentPosition(position => {
         this.center = {
           lat: position.coords.latitude,
@@ -57,7 +55,6 @@ export default {
 
         // including a marker on your current location
         this.markers.push({position: this.center});
-
       });
     }
   }
