@@ -1,5 +1,5 @@
 <template>
-  <b-table striped hover :items="items" :fields="fields">
+  <b-table striped hover :items="openServices" :fields="fields">
     <template slot="time_pick" slot-scope="data">
       <b-container class="bv-example-row">
         <b-row>
@@ -37,7 +37,7 @@
     </b-container>
     </template>
     <template slot="instructor_name" slot-scope="data">
-      <b-form-select @change="selectServiceProvider($event, data.index)" :options="options" class="mb-3" size="sm" />
+      <b-form-select @change="selectServiceProvider($event, data.index)" :options="openServices[data.index].providers" class="mb-3" size="sm" />
     </template>
     <template slot="show_details" slot-scope="data">
       <b-button size="sm" @click.stop="makeReservation(data.item.id, data.index)" class="mr-2">
@@ -50,20 +50,13 @@
 </template>
 
 <script>
-
-const items = [
-  { id: 1, name: 'Meal Preparation', instructor_name: 'Chef. Brown', maxCapacity: 20 },
-  { id: 2, name: 'Boxing 1:1 w/ Luis', instructor_name: 'Larsen', maxCapacity: 10 },
-  { id: 3, name: 'Personal session 1 hr', instructor_name: 'Geneva', maxCapacity: 5 },
-  { id: 4, name: '1:1 Weights', instructor_name: 'Ruslan', maxCapacity: 20 }
-];
+import axios from 'axios';
 
 export default {
   name: 'open-service-list',
   data () {
     return {
       fields: [ 'name', 'instructor_name', 'time_pick', 'show_details' ],
-      items: items,
       time: new Date(),
       options: [
         { value: null, text: 'Any available' },
@@ -75,6 +68,10 @@ export default {
       activeIndex: null
     }
   },
+  props: [
+    'openServices',
+    'serviceDate'
+  ],
   methods: {
     makeReservation (serviceId, index) {
       if (!this.apiData[index] || !this.apiData[index]['service_provider_id'] || !this.apiData[index]['time']) {
@@ -91,7 +88,7 @@ export default {
         this.apiData[index] = [];
       }
       this.apiData[index]['service_provider_id'] = id;
-
+      this.getServiceProviderAvailability(id);
     },
     selectServiceTime (time, index) {
       this.activeIndex = time + index;
@@ -100,6 +97,14 @@ export default {
       }
 
       this.apiData[index]['time'] = time;
+    },
+    getServiceProviderAvailability: function(id) {
+      axios.get(`/schedule-api/availability/${this.serviceDate}/${id}`)
+      .then((response) => {
+        console.log(response.data);
+      }).catch((error) => {
+        console.log(error);
+      });
     }
   }
 }

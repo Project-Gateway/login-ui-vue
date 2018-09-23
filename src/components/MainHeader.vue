@@ -9,7 +9,7 @@ export default {
   name: 'main-header',
   data() {
     return {
-      title: 'Nice Boat',
+      title: 'Renat\'s Gym',
     };
   },
 };

@@ -10,7 +10,11 @@
 
     <h2>One on one and consultations</h2>
 
-    <open-service-list></open-service-list>
+    <open-service-list
+      v-bind:openServices="openServices"
+      v-bind:serviceDate="serviceDate"
+    >
+    </open-service-list>
 
   </div>
 
@@ -20,24 +24,27 @@
   import DraggableCal from 'vue-draggable-cal';
   import ServiceList from '@/components/ServiceList';
   import OpenServiceList from '@/components/OpenServiceList';
+  import axios from 'axios';
 
   export default {
     name: 'date-picker',
     components: { DraggableCal, ServiceList, OpenServiceList },
     data: function() {
       return {
-        serviceDate: 'Today'
+        serviceDate: 'Today',
+        openServices: [],
       }
     },
     methods: {
       dateClick: function (event) {
-        this.serviceDate = event.toDateString();
+        this.serviceDate = event.toISOString().slice(0,10);
         this.getServiceList();
       },
       getServiceList: function() {
-        axios.get('/api/get-services/' + this.serviceDate)
+        axios.get(`/schedule-api/appointments/${this.serviceDate}`)
         .then((response) => {
-          console.log(response);
+          console.log(response.data);
+          this.openServices = response.data;
         }).catch((error) => {
           console.log(error);
         });
