@@ -57,7 +57,7 @@ export default {
   },
   actions: {
     setupLoginApi: ({ state }) => {
-      axios.defaults.headers.common['X-Orion-Application'] = 'niceboat';
+      axios.defaults.headers.common['X-Orion-Application'] = process.env.APPLICATION_NAME;
     },
     retrieveSocialLinks: ({ state, commit, getters }) => {
       if (!state.socialUrls) {
