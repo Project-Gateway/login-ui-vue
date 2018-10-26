@@ -53,8 +53,12 @@ export default {
           label: 'Home',
           exact: true,
         }, {
-          path: '/users/index',
-          label: 'Users',
+          path: '/schedule',
+          label: 'Schedule',
+          requiresAuth: true,
+        }, {
+          path: '/working-times',
+          label: 'Working Times',
           requiresAuth: true,
         }
       ],

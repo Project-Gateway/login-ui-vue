@@ -13,6 +13,7 @@ import DraggableCal from 'vue-draggable-cal';
 import BootstrapVue from 'bootstrap-vue';
 import ServiceList from '../components/ServiceList';
 import OpenServiceList from '../components/OpenServiceList';
+import WorkingTimes from '../views/WorkingTimes.vue';
 import * as uiv from 'uiv';
 
 Vue.use(Router);
@@ -55,7 +56,18 @@ export default new Router({
     {
       path: '/schedule',
       name: 'DatePicker',
-      component: DatePicker
+      component: DatePicker,
+      meta: {
+        requiresAuth: true,
+      }
+    },
+    {
+      path: '/working-times',
+      name: 'WorkingTimes',
+      component: WorkingTimes,
+      meta: {
+        requiresAuth: true,
+      }
     },
     {
       path: '/test',

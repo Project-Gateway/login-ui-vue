@@ -13,6 +13,8 @@ import store from './store';
 import * as VueGoogleMaps from 'vue2-google-maps';
 import PubNubVue from 'pubnub-vue';
 import '@devexpress/dx-vue-grid-bootstrap4/dist/dx-vue-grid-bootstrap4.css';
+import FullCalendar from "vue-full-calendar";
+import "fullcalendar/dist/fullcalendar.min.css";
 
 Vue.config.productionTip = false;
 
@@ -29,6 +31,8 @@ Vue.use(PubNubVue, {
   subscribeKey: 'sub-c-fce045dc-95bc-11e8-9a78-8ae329637954',
   publishKey: 'pub-c-bc1ba433-8a7e-40a1-bbb1-b498c93e0eaf',
 });
+
+Vue.use(FullCalendar);
 
 router.beforeEach((to, from, next) => {
 
