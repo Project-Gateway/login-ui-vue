@@ -54,12 +54,10 @@
 </template>
 
 <script>
-import Separator from './widgets/Separator';
-import api from '../helpers/api';
+import Separator from '../components/widgets/Separator';
 
 export default {
   components: { Separator },
-  name: 'login-form',
   props: ['query'],
   data() {
     return {
@@ -75,21 +73,18 @@ export default {
       return this.$store.getters['identity/socialUrls'];
     },
     facebookUrl() {
-      return this.socialUrls === null ? '' : this.socialUrls.facebook;
+      return this.$store.state.socialUrls === null ? '' : this.$store.state.socialUrls.facebook;
     },
     googleUrl() {
-      return this.socialUrls === null ? '' : this.socialUrls.google;
+      return this.$store.state.socialUrls === null ? '' : this.$store.state.socialUrls.google;
     },
     twitterUrl() {
-      return this.socialUrls === null ? '' : this.socialUrls.twitter;
-    },
-    logged() {
-      return this.$store.getters['identity/logged'] ? 'Logado!' : 'Deslogado!';
+      return this.$store.state.socialUrls === null ? '' : this.$store.state.socialUrls.twitter;
     },
   },
   methods: {
     submit() {
-      this.$store.dispatch('identity/login', {email: this.form.email, password: this.form.password}).then(() => {
+      this.$store.dispatch('login', {email: this.form.email, password: this.form.password}).then(() => {
         this.$router.push('/');
       }).catch(({response}) => {
         this.error = response.data.message;

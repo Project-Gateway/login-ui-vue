@@ -32,7 +32,8 @@
     "vue-full-calendar": "^2.7.0",
     "vue-router": "^3.0.1",
     "vue2-google-maps": "^0.10.1",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vuex-persist": "^2.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

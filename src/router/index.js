@@ -1,10 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from '@/components/Home';
 import Test from '@/components/Test';
 import OAuth from '@/components/OAuth';
 import Chat from '@/components/Chat';
-import LoginPage from '@/components/LoginPage';
 import RegisterPage from '@/components/RegisterPage';
 import IndexCrudPage from '@/components/IndexCrudPage';
 import UserForm from '@/components/UserForm';
@@ -13,8 +11,9 @@ import DraggableCal from 'vue-draggable-cal';
 import BootstrapVue from 'bootstrap-vue';
 import ServiceList from '../components/ServiceList';
 import OpenServiceList from '../components/OpenServiceList';
-import WorkingTimes from '../views/WorkingTimes.vue';
+import WorkingTimes from '../pages/WorkingTimes.vue';
 import * as uiv from 'uiv';
+import store from '@/store/index';
 
 Vue.use(Router);
 Vue.use(DatePicker);
@@ -24,18 +23,18 @@ Vue.use(ServiceList);
 Vue.use(OpenServiceList);
 Vue.use(uiv);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     {
       path: '/',
       name: 'Home',
-      component: Home,
+      component: () => import('@/pages/Home'),
     },
     {
       path: '/login',
       name: 'Log In',
-      component: LoginPage,
+      component: () => import('@/pages/Login'),
       meta: {
         requiresGuest: true,
       }
@@ -59,6 +58,7 @@ export default new Router({
       component: DatePicker,
       meta: {
         requiresAuth: true,
+        requiresCustomer: true,
       }
     },
     {
@@ -67,6 +67,7 @@ export default new Router({
       component: WorkingTimes,
       meta: {
         requiresAuth: true,
+        requiresAdmin: true,
       }
     },
     {
@@ -126,3 +127,51 @@ export default new Router({
     },
   ],
 });
+
+router.beforeEach((to, from, next) => {
+
+  // function that control the access
+  const guard = () => {
+
+    // user must be authenticated
+    if (to.meta.requiresAuth && !store.getters['logged']) {
+      return next('/');
+    }
+
+    // user must be anonymous
+    if (to.meta.requiresGuest && store.getters['logged']) {
+      return next('/');
+    }
+
+    // user must be admin
+    if (to.meta.requiresAdmin && !['admin', 'professional'].includes(store.state.role)) {
+      return next('/');
+    }
+
+    // user must be customer
+    if (to.meta.requiresCustomer && store.state.role !== 'customer') {
+      return next('/');
+    }
+
+    // everything ok
+    return next();
+
+  };
+
+  // if the auth state is ready go forward
+  if (store.state.ready) {
+    return guard();
+  }
+
+  //if it's still been read from local storage, watch the ready state
+  store.watch(
+    (state) => state.ready,
+    (value) => {
+      if (value) {
+        guard();
+      }
+    }
+  );
+});
+
+export default router;

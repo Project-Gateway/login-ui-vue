@@ -43,7 +43,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import TimeSlotPicker from './TimeSlotPicker.vue';
 
 export default {
@@ -81,7 +80,7 @@ export default {
   methods: {
     makeReservation (serviceId, index) {
       this.$set(this.buttonState, index, 'loading');
-      axios.post('/schedule-api/appointments/schedule', {
+      this.$store.state.scheduleApi.post('/appointments/schedule', {
         service_id: serviceId,
         provider_id: this.selectedInstructor[index],
         time: `${this.serviceDate} ${this.selectedTime[index]}`,
@@ -98,7 +97,7 @@ export default {
     },
     getServiceProviderAvailability: function(id, index) {
       this.$set(this.timePickerState, index, 'loading');
-      axios.get(`/schedule-api/availability/${this.serviceDate}/${id}`)
+      this.$store.state.scheduleApi.get(`/availability/${this.serviceDate}/${id}`)
       .then((response) => {
         this.$set(this.timeSlots, index, response.data);
         this.$set(this.timePickerState, index, 'ready');

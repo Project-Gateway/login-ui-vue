@@ -6,13 +6,12 @@
 </template>
 
 <script>
-  import LoginForm from './LoginForm.vue';
+  import LoginForm from '@/components/LoginForm.vue';
 
   export default {
     components: {
       LoginForm,
     },
-    name: 'login-page',
     data() {
       return {
         breadcrumb: ['Login']

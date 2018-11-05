@@ -29,7 +29,6 @@
   import DraggableCal from 'vue-draggable-cal';
   import ServiceList from '@/components/ServiceList';
   import OpenServiceList from '@/components/OpenServiceList';
-  import axios from 'axios';
 
   export default {
     name: 'date-picker',
@@ -48,7 +47,7 @@
       },
       getServiceList: function () {
         this.ready = false;
-        axios.get(`/schedule-api/appointments/${this.serviceDate}`)
+        this.$store.state.scheduleApi.get(`/appointments/${this.serviceDate}`)
         .then((response) => {
           this.openServices = Object.values(response.data);
           this.ready = true;
